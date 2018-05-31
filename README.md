@@ -9,22 +9,21 @@ You use this software and instructions at your own risk - if you break something
 
 This software was initially developed for Arduino to convert a mobility scooter into an electric car for a child. The electric cars and software have excited so many parents and children that I created [Cruisin Co](https://cruisin.co). [Cruisin Co](https://cruisin.co) has detailed instructions on how to build an electric car for children (and adults) as well as other information you might find of interest. We are also working on creating a [Cruisin Brain](https://cruisin.co/cruisin-brain/cruisinBrain/)
 
+The Cruisin Brain is a combination of this software and hardware, to create a full featured onboard computer.
+
 # FEATURES
 
 This software was developed to take input from two switches (buttons) (named Right and Left) and translate button pushes into motion.
 
 - Pressing the Right button, results in the car moving forwards
 - Pressing both the Right and Left buttons, results in the car moving reverse
-- Holding the Right button for longer than 30 seconds, results in CruiseControl being enabled (car moves forward without input)
+- Holding the Right button for longer than 30 seconds, results in Cruise Control being enabled (car moves forward without input)
 - When Cruise Control is enabled pressing the Left (at any time) or Right (5 seconds after Cruise Control is enabled) button disables Cruise Control and the car will brake
 - Pressing no buttons results in the car stopping (unless Cruise Control is enabled)
 
 ## WARNING ON CRUISE CONTROL
-This software has a feature called Cruise Control (enabled by default can be disabled) which results in the Arduino holding full throttle without input after Forward has been commanded a set amount of time (normally 30 seconds but can be changed). Cruise Control was implemented 
+This software has a feature called Cruise Control (enabled by default, can be disabled) which results in the Cruisin Brain holding full throttle without input after Forward has been commanded a set amount of time (normally 30 seconds but can be changed). Cruise Control was implemented 
 because the children I created these cars for (7 families in our neighborhood so far) complained that pushing the button for long periods of time hurt their finger (certainly a first world problem). Cruise Control can have an unintended side effect (which has happened to one of the very young children) where the child falls off the car while Cruise Control is enabled, which results in the car continuing on its merry way without a driver.
-
-## WARNING ON USING MOBILITY SCOOTERS AS KIDS CARS
-Mobility scooters are designed to carry large adults (up to 200kg), this has the benefit of one car being able to transport several children at once. The negative of this is that these cars are very strong and have the ability to push a small child over or even drive over them, which I have been unable to find a technical solution to this. 
 
 <br>
 
