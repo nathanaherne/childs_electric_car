@@ -7,7 +7,7 @@ You use this software and instructions at your own risk - if you break something
 -------------------------------------------------------------------------------------------------------
 # OVERVIEW
 
-This software was initially developed for Arduino to convert a mobility scooter into an electric car for a child. The electric cars and software have excited so many parents and children that I created [Cruisin Co](https://cruisin.co). [Cruisin Co](https://cruisin.co) has detailed instructions on how to build an electric car for children (and adults) as well as other information you might find of interest. We are also working on creating a [Cruisin Brain](https://cruisin.co/cruisin-brain/cruisinBrain/)
+This software was initially developed for Arduino to convert a mobility scooter into an electric car for a child. The electric cars and software have excited so many parents and children that I created [Cruisin Co](https://cruisin.co). [Cruisin Co](https://cruisin.co) has detailed instructions on how to build an electric car for children (and adults) as well as other information you might find of interest. We are also working on creating a [Cruisin Brain](https://cruisin.co/cruisin-brain/cruisinBrain/) that you can purchase so you do not need to make the hardware to run the Cruisin Brain software.
 
 The Cruisin Brain is a combination of this software and hardware, to create a full featured onboard computer.
 

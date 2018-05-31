@@ -10,11 +10,11 @@ Options are:
 /*********************************************************************/
 
 // Turn on/off debugging output - turn off when not being used as it increases the code timings
-#define Debug
+//#define Debug
 /*********************************************************************/
 
 // Reverse motor direction
-boolean reverseMotorDirection = 0; // 1 = true, 0 = false
+boolean reverseMotorDirection = true;
 
 // Enable/Disable Cruise Control
 boolean enableCruiseControl = true;
@@ -26,7 +26,7 @@ int forwardRampPercent = 50; // Forward acceleration percent -> larger value = s
 int maxReversePercent = 60; // Maximum reverse throttle (percentage)
 int reverseRampPercent = 50; // Reverse acceleration percent -> larger value = slower acceleration
 
-int brakeRampPercent = 15; // Brake acceleration percent -> larger value = slower acceleration
+int brakeRampPercent = 25; // Brake acceleration percent -> larger value = slower acceleration
 
 int maxCruiseControlPercent = 70; // Maximum Cruise Control forward throttle (percentage)
 int cruiseControlRampPercent = 50; // Cruise Control acceleration speed (milliseconds), larger value = slower acceleration

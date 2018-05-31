@@ -156,7 +156,7 @@ void calcMotion(int motionCommanded, boolean &cruiseControlOn, int &currentThrot
   // cruiseControlOn = false -> forward is different to CruiseControl 
   // currentThrottle >= throttleBrake -> when going from reverse to forward, brakeRampInterval unsed until currentThrottle = throttleBrake 
   // currentThrottle <= maxForward -> if forward commanded BEFORE throttle is below maxForward then vehicle must be braked first
-  if (motionCommanded == 1 && !cruiseControlOn && !reverseMotorDirection && currentThrottle >= throttleBrake && currentThrottle <= maxForward + 1) {
+  if (motionCommanded == 1 && !cruiseControlOn && reverseMotorDirection == false && currentThrottle >= throttleBrake && currentThrottle <= maxForward + 1) {
     #if defined(Debug)
     Serial.print("Forward - ");
     #endif
@@ -171,14 +171,14 @@ void calcMotion(int motionCommanded, boolean &cruiseControlOn, int &currentThrot
   // cruiseControlOn = false -> forward is different to CruiseControl 
   // currentThrottle >= throttleBrake -> when going from reverse to forward, brakeRampInterval unsed until currentThrottle = throttleBrake 
   // currentThrottle <= maxForward -> if forward commanded BEFORE throttle is below maxForward then vehicle must be braked first
-  else if (motionCommanded == 1 && !cruiseControlOn && reverseMotorDirection && currentThrottle <= throttleBrake && currentThrottle >= maxForward - 1) {
+  else if (motionCommanded == 1 && cruiseControlOn == false && reverseMotorDirection == true && currentThrottle <= throttleBrake && currentThrottle >= maxForward - 1) {
     #if defined(Debug)
     Serial.print("Forward - ");
     #endif
     reduceThrottle(currentMillis, previousForwardRampMillis, forwardRampInterval, currentThrottle, maxForward);
   }
   // Reverse commanded and reverseMotorDirection = false
-  else if (motionCommanded == 2  && !reverseMotorDirection && currentThrottle <= throttleBrake) {
+  else if (motionCommanded == 2  && reverseMotorDirection == false && currentThrottle <= throttleBrake) {
     #if defined(Debug)
     Serial.print("Reverse - ");
     #endif
@@ -186,7 +186,7 @@ void calcMotion(int motionCommanded, boolean &cruiseControlOn, int &currentThrot
     cruiseControlMillis = 0; // reset CruiseControlMillis counter
   }
   // Reverse commanded and reverseMotorDirection = true  
-  else if (motionCommanded == 2  && reverseMotorDirection && currentThrottle >= throttleBrake) {
+  else if (motionCommanded == 2  && reverseMotorDirection == true && currentThrottle >= throttleBrake) {
     #if defined(Debug)
     Serial.print("Reverse - ");
     #endif
@@ -194,14 +194,14 @@ void calcMotion(int motionCommanded, boolean &cruiseControlOn, int &currentThrot
     cruiseControlMillis = 0; // reset CruiseControlMillis counter
   }
   // cruiseControlOn = true and reverseMotorDirection = false
-  else if (cruiseControlOn && !reverseMotorDirection) {
+  else if (cruiseControlOn == true && reverseMotorDirection == false) {
     #if defined(Debug)
     Serial.print("Cruise Control - ");
     #endif
     increaseThrottle(currentMillis, previousCruiseControlRampMillis, cruiseControlForwardRampInterval, currentThrottle, maxCruiseControlForward);
   }
   // cruiseControlOn = true and reverseMotorDirection = true
-  else if (cruiseControlOn && reverseMotorDirection) {
+  else if (cruiseControlOn == true && reverseMotorDirection == true) {
     #if defined(Debug)
     Serial.print("Cruise Control - ");
     #endif
