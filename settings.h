@@ -1,23 +1,18 @@
-/*********************************************************************
-MOTOR CONTROLLER OPTIONS
-Options are:
- 1. MOT_MCP4XXX -> Mobility scooter controller or controller that requires an MCP4XXX family digital potentiometer
- 3. MOT_MOT_SYREN50 -> Dimension Engineering MOT_SYREN50 motor controller
- 4. MOT_SABER2x32 -> Dimension Engineering Sabertooth 2x32 motor controller
- 5. MOT_SPARK -> Spark Motor controller
-*/
+////////////////////////////////////////////////////////////////////////
+// MOTOR CONTROLLER OPTIONS
+// Options are:
+// 1. MOT_MCP4XXX -> Mobility scooter controller or controller that requires an MCP4XXX family digital potentiometer
+// 3. MOT_SYREN50 -> Dimension Engineering MOT_SYREN50 motor controller
+// 4. MOT_SABER2x32 -> Dimension Engineering Sabertooth 2x32 motor controller
+// 5. MOT_SPARK -> Spark Motor controller
 #define MOT_SPARK
-/*********************************************************************/
-
-// Turn on/off debugging output - turn off when not being used as it increases the code timings
-//#define Debug
-/*********************************************************************/
+////////////////////////////////////////////////////////////////////////
 
 // Reverse motor direction
-boolean reverseMotorDirection = true;
+boolean reverseMotorDirection = true; // true is reverse motor direction, false is do not reverse motor direction
 
 // Enable/Disable Cruise Control
-boolean enableCruiseControl = true;
+boolean enableCruiseControl = true; // True is enabled, false is disabled
 
 // Speed and Acceleration settings
 int maxForwardPercent = 67; // Maximum forward throttle (percentage)
@@ -28,18 +23,20 @@ int reverseRampPercent = 50; // Reverse acceleration percent -> larger value = s
 
 int brakeRampPercent = 25; // Brake acceleration percent -> larger value = slower acceleration
 
+int minCruiseControlPercent = 50; // Throttle percent above which Cruise Control can be enabled by button
 int maxCruiseControlPercent = 70; // Maximum Cruise Control forward throttle (percentage)
 int cruiseControlRampPercent = 50; // Cruise Control acceleration speed (milliseconds), larger value = slower acceleration
-int cruiseControlWaitSec = 30; // Seconds Forward must be commanded for Cruise Control to activate (1000ms = 1 second)
-int cruiseControlRightButtonDisableDelaySec = 5; // Seconds after CruiseControl enabled before Right momentary button CAN disable it
 
-/***************************************************************************************************************************************
- * DO NOT CHANGE THE BELOW SETTINGS UNLESS YOU REALLY KNOW WHAT YOU ARE DOING
-***************************************************************************************************************************************/
+// Only active when MC_cruise_control = MC_forward
+int cruiseControl_MC_forward_EnableDelaySec = 30; // Seconds MC_forward must be true for Cruise Control to activate
+int cruiseControl_MC_forward_DisableDelaySec = 5; // Seconds after CruiseControl enabled before MC_forward can disable it
 
-/**********************************************************************************************************************
-CONFIGURATION FOR 5V DIGITAL POTENTIOMETER VIA SPI
-**********************************************************************************************************************/
+////////////////////////////////////////////////////////////////////////
+// DO NOT CHANGE THE BELOW SETTINGS UNLESS YOU KNOW WHAT YOU ARE DOING
+////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////
+// MCP4XXX 5V DIGITAL POTENTIOMETER VIA SPI
 #if defined(MCP4XXX)
 
   // Interface with digital potentiometer via SPI
@@ -57,57 +54,74 @@ CONFIGURATION FOR 5V DIGITAL POTENTIOMETER VIA SPI
   const int throttleMax = 255; // Potentiometer Max or Forward value
 
 #endif
-/**********************************************************************************************************************/
+////////////////////////////////////////////////////////////////////////
 
-/**********************************************************************************************************************
-CONFIGURATION FOR DIMENSION ENGINEERING MOT_SYREN50 MOTOR CONTROLLER
-**********************************************************************************************************************/
-#if defined(MOT_SYREN50) || defined(MOT_SABER2x32)
-
+////////////////////////////////////////////////////////////////////////
+// SYREN50 MOTOR CONTROLLER
+#if defined(MOT_SYREN50)
   #include <Sabertooth.h>
-  #include <SoftwareSerial.h>
   
-  // Throttle Values for MOT_SYREN50 and MOT_SABER2x32
-  const int throttleMin = -127;  // MOT_SYREN50 minimum or Reverse value
-  const int throttleBrake = 0; // MOT_SYREN50 Brake value
-  const int throttleMax = 127; // MOT_SYREN50 maximum or Forward value
-  
-  const int SwSerialTxPin = 11; // Pin used for Software Serial
-  
-  SoftwareSerial SabertoothSWSerial(NOT_A_PIN, SwSerialTxPin); // RX on no pin (unused), TX to S1 of Syren
-  Sabertooth ST(128, SabertoothSWSerial); // Address 128, and use SWSerial as the serial port.
-  const int motorDriverTimeout = 1000;
+  Sabertooth ST(128, Serial1); // Address 128, and use SWSerial as the serial port.
 
+  // Throttle Values for Syren50
+  const int throttleMin = -127;  // minimum or Reverse value
+  const int throttleBrake = 0; // Brake value
+  const int throttleMax = 127; // maximum or Forward value
+
+  const int driverTimeout = 500; //Number of milliseconds before Sabertooth2x32 will stop motors.
+  const int driverDeadband = 0; //Full deadband around throttleBrake -> If motor driver has deadband this amount will be removed
 #endif
 
+////////////////////////////////////////////////////////////////////////
+// SABERTOOTH2x32 MOTOR CONTROLLER
+#if defined(MOT_SABER2x32)
+  #include <USBSabertooth.h>
+
+  USBSabertoothSerial C(Serial1);
+  USBSabertooth ST(C, 128);
+
+  // Throttle values for Sabertooth2x32
+  const int throttleMin = -2047;  // minimum or Reverse value
+  const int throttleBrake = 0; // Brake value
+  const int throttleMax = 2047; // maximum or Forward value
+  
+  const int driverTimeout = 500; //Number of milliseconds before Sabertooth2x32 will stop motors.
+  const int driverDeadband = 0; //Full deadband around throttleBrake -> If motor driver has deadband this amount will be removed
+#endif
+
+////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////
 // SPARK MOTOR CONTROLLER
 #if defined(MOT_SPARK)
   #include <Servo.h> 
 
-  const int spark1_pin = 9; // pin 9
+  const int mot_pwm1_pin = PC15; // pin1
+  const int mot_pwm2_pin = PA1; // pin2
+  const int mot_pwm3_pin = PA2; // pin2
+  const int mot_pwm4_pin = PA3; // pin2
 
   // Throttle values for Spark
   const int throttleMin = 1000;  // minimum or Reverse value
   const int throttleBrake = 1500; // Brake value
   const int throttleMax = 2000; // maximum or Forward value
+  
+  const int driverDeadband = 23; //Full deadband around throttleBrake -> If motor driver has deadband this amount will be removed
 
   Servo spark1;
+  Servo spark2;
+  Servo spark3;
+  Servo spark4;
 #endif
+////////////////////////////////////////////////////////////////////////
 
-/***************************************************************************************************************************************
- * GLOBAL VARIABLES
-***************************************************************************************************************************************/
+////////////////////////////////////////////////////////////////////////
+// Debugging
+// Turn on/off debugging output - turn off when not being used as it slows the software down
+//#define DEBUG
+////////////////////////////////////////////////////////////////////////
 
-// Momentary button input pins
-const int rightButton = 7; // right momentary button pin
-const int leftButton = 5; // left momentary button pin
-
-int maxForward;
-int maxReverse;
-int maxCruiseControl;
-
-int forwardRampInterval;
-int reverseRampInterval;
-int brakeRampInterval;
-int cruiseControlRampInterval;
-const int throttleRangeMs = 25500; // Max milliseconds between forward/reverse
+////////////////////////////////////////////////////////////////////////
+// OTHER VARIABLES
+////////////////////////////////////////////////////////////////////////
+const int throttleRangeMs = 25500; // Max milliseconds between full forward and full reverse -> effects all RampIntervals
