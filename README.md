@@ -1,8 +1,8 @@
-# Cruisin Brain - Education Version
+## Cruisin Brain - Education Version
 
- This software was developed for the [Cruisin Co Electric Car](https://cruisin.co/diy-cruisin-car/buildOverview/). [Cruisin Co](https://cruisin.co) has detailed instructions on how to build an electric car for children as well as other information you might find of interest. 
+ This is the Cruisin Brain (education version) software. The Cruisin Brain was developed for the Cruisin Electric Car, so that it was awesome, educational and safe. Detailed instructions on how to build the Cruisin Electric car are [available here](https://cruisin.co/diy-cruisin-car/buildOverview/).
 
-We are working on creating [Cruisin Brain - Education Version](https://cruisin.co/cruisin-brain/cruisinBrain/) hardware that you can purchase so you do not need to make the hardware yourself.
+Currently you need to build your own Cruisin Brain hardware. We are working on creating [Cruisin Brain - Education Version](https://cruisin.co/cruisin-brain/cruisinBrain/) hardware that you can purchase so you do not need to make the hardware yourself.
 
 <br>
 
@@ -17,6 +17,8 @@ This software was developed to take input from two switches (buttons) (named For
 - Holding the Right button for longer than 30 seconds, results in Cruise Control being enabled (car moves Forward without input)
 - When Cruise Control is enabled pressing the Reverse (at any time) or Forward (5 seconds after Cruise Control is enabled) button disables Cruise Control and the car will brake
 - Pressing no buttons results in the car stopping (unless Cruise Control is enabled)
+
+<br>
 
 -------------------------------------------------------------------------------------------------------
 
