@@ -2,11 +2,11 @@
 
  This is the Cruisin Brain (education version) software. The Cruisin Brain was developed for the Cruisin Electric Car, so that it was awesome, educational and safe. Detailed instructions on how to build the Cruisin Electric car are [available here](https://cruisin.co/diy-cruisin-car/buildOverview/).
 
-Currently you need to build your own Cruisin Brain hardware. We are working on creating [Cruisin Brain - Education Version](https://cruisin.co/cruisin-brain/cruisinBrain/) hardware that you can purchase so you do not need to make the hardware yourself.
+Currently you need to build your own Cruisin Brain hardware. We are working on creating [Cruisin Brain](https://cruisin.co/cruisin-brain/cruisinBrain/) hardware that you can purchase so you do not need to make the hardware yourself.
 
 <br>
 
-## FEATURES
+## Features
 
 This software was developed to take input from two switches (buttons) (named Forward and Reverse) and translate button pushes into motion.
 
@@ -18,7 +18,7 @@ This software was developed to take input from two switches (buttons) (named For
 
 <br>
 
-## MOTOR CONTROLLERS SUPPORTED
+## Motor Controllers supported
 
 This software was developed to interface with the following motor controllers:
 
@@ -46,7 +46,7 @@ NOTE: You will need to remove the electronic brakes from the motors or implement
 
 <br>
 
-## WIRING
+## Wiring
 
 The software expects the following wiring connections:
 
@@ -66,7 +66,7 @@ The software expects the following wiring connections:
 
 <br>
 
-## CONFIGURATION
+## Configuration
 
 You can configure this software in the settings.h file.
 
