@@ -6,8 +6,6 @@ Currently you need to build your own Cruisin Brain hardware. We are working on c
 
 <br>
 
--------------------------------------------------------------------------------------------------------
-
 ## FEATURES
 
 This software was developed to take input from two switches (buttons) (named Forward and Reverse) and translate button pushes into motion.
@@ -19,8 +17,6 @@ This software was developed to take input from two switches (buttons) (named For
 - Pressing no buttons results in the car stopping (unless Cruise Control is enabled)
 
 <br>
-
--------------------------------------------------------------------------------------------------------
 
 ## MOTOR CONTROLLERS SUPPORTED
 
@@ -50,8 +46,6 @@ NOTE: You will need to remove the electronic brakes from the motors or implement
 
 <br>
 
--------------------------------------------------------------------------------------------------------
-
 ## WIRING
 
 The software expects the following wiring connections:
@@ -72,8 +66,6 @@ The software expects the following wiring connections:
 
 <br>
 
--------------------------------------------------------------------------------------------------------
-
 ## CONFIGURATION
 
 You can configure this software in the settings.h file.
@@ -91,15 +83,12 @@ You can also configure acceleration (for Forward/Reverse/CruiseControl) and dece
 
 <br>
 
--------------------------------------------------------------------------------------------------------
-
 ## LEGAL STUFF
 
 You use this software and instructions at your own risk - if you break something, hurt someone or something or anything else happens, I am not responsible.
 
 <br>
 
--------------------------------------------------------------------------------------------------------
 ## WARNINGS
 
 ### CRUISE CONTROL
@@ -108,11 +97,6 @@ because the children I created these cars for (7 families in our neighborhood so
 
 <br>
 
--------------------------------------------------------------------------------------------------------
-
-# TECHNICAL NOTES
+## TECHNICAL NOTES
 
 The software has been written with the intention of it being readable more than technically code efficient.
-
-<br>
--------------------------------------------------------------------------------------------------------
