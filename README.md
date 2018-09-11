@@ -1,6 +1,6 @@
 ## Cruisin Brain - Education Version
 
- This is the Cruisin Brain (education version) software. The Cruisin Brain was developed for the Cruisin Electric Car, so that it was awesome, educational and safe. Detailed instructions on how to build the Cruisin Electric car are [available here](https://cruisin.co/diy-cruisin-car/buildOverview/).
+This is the Cruisin Brain (education version) software. The Cruisin Brain was developed for the Cruisin Electric Car, so that it was awesome, educational and safe. Detailed instructions on how to build the Cruisin Electric car are [available here](https://cruisin.co/diy-cruisin-car/buildOverview/).
 
 Currently you need to build your own Cruisin Brain hardware. We are working on creating [Cruisin Brain](https://cruisin.co/cruisin-brain/cruisinBrain/) hardware that you can purchase so you do not need to make the hardware yourself.
 
@@ -38,9 +38,9 @@ NOTE: You will need to remove the electronic brakes from the motors or implement
 
 The Sabertooth2x32 has the ability to control two electric motors (among a number of other features). This software has been designed to support the Sabertooth2x32. The main issue with using the Sabertooth2x32 with two rear motors is there will be no differential, the rear wheels will be locked, making steering difficult.
 
-### Spark Motor Controller
+### Rev Robotics Spark
 
-Your car may have one motor with a physical differential or two motors, one motor per wheel. The Spark will work with both types. To use the Spark with one motor, just wire it as per the manual. To use the Spark with two motors, you should wire the motors in series so that you get an electronic differential, though speed will be halved.
+Your car may have one motor with a physical differential or two motors, one motor per wheel. The Rev Robotics Spark will work with both types. To use the Rev Robotics Spark with one motor, just wire it as per the manual. To use the Spark with two motors, you should wire the motors in series so that you get an electronic differential, though speed will be halved.
 
 NOTE: You will need to remove the electronic brakes from the motors or implement control of the electronic brakes yourself.
 

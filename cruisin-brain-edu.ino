@@ -4,6 +4,7 @@
 // Required files
 #include "pins.h"
 #include "settings.h"
+#include "config.h"
 
 
 void setup() {
