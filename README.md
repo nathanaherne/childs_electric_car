@@ -1,11 +1,7 @@
-# DISCLAIMER
+# Cruisin Co
 
-You use this software and instructions at your own risk - if you break something, hurt someone or something or anything else happens
-that is entirely on you.
+For detailed instructions on how to use this software go to https://cruisin.co
 
-<br>
-
--------------------------------------------------------------------------------------------------------
 # OVERVIEW
 
 This software was developed for Arduino to convert a mobility scooter into an electric car for a child.
@@ -135,3 +131,12 @@ You can also configure acceleration (for Forward/Reverse/Cruisecontrol) and dece
 # TECHNICAL NOTES
 
 The software has been written with the intention of it being readable more than technically code efficient.
+
+<br>
+
+-------------------------------------------------------------------------------------------------------
+
+# DISCLAIMER
+
+You use this software and instructions at your own risk - if you break something, hurt someone or something or anything else happens
+that is entirely on you.
