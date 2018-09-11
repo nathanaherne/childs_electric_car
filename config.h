@@ -1,38 +1,17 @@
 ////////////////////////////////////////////////////////////////////////
-// MCP4XXX 5V DIGITAL POTENTIOMETER VIA SPI
-#if defined(MCP4XXX)
-
-  // Interface with digital potentiometer via SPI
-  #include <SPI.h>
-  byte address = 0x00;
-  // SPI pins
-  const int CS = 10; // (SS) or Chip Select,
-  // 11 (MOSI)
-  // 12 (MISO)
-  // 13 (SCK)
-
-  // Pot output Values
-  const int throttleMin = 1; // Potentiometer minimum or Reverse value
-  const int throttleBrake = 128; // Potentiometer Brake value
-  const int throttleMax = 255; // Potentiometer Max or Forward value
-
-#endif
-////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////
 // SYREN50 MOTOR CONTROLLER
 #if defined(MOT_SYREN50)
   #include <Sabertooth.h>
   
-  Sabertooth ST(128, Serial2); // Address 128, and use SWSerial as the serial port.
+  Sabertooth ST(128, Serial1); // Address 128, and use SWSerial as the serial port.
 
   // Throttle Values for Syren50
-  const int throttleMin = -127;  // minimum or Reverse value
-  const int throttleBrake = 0; // Brake value
-  const int throttleMax = 127; // maximum or Forward value
+  const int mot_throttleMin = -127;  // Minimum throttle value for motor controller
+  const int mot_throttleBrake = 0; // Brake throttle value for motor controller
+  const int mot_throttleMax = 127; // Maximum throttle value for motor controller
 
-  const int driverTimeout = 500; //Number of milliseconds before Sabertooth2x32 will stop motors.
-  const int driverDeadband = 0; //Full deadband around throttleBrake -> If motor driver has deadband this amount will be removed
+  const int driverTimeout_us = 500; // Number of milliseconds 
+  const int removeDriverDeadbandPercent = 0; // Remove motor driver deadband -> remove percentage of throttle around mot_throttleBrake
 #endif
 
 ////////////////////////////////////////////////////////////////////////
@@ -40,35 +19,44 @@
 #if defined(MOT_SABER2x32)
   #include <USBSabertooth.h>
 
-  USBSabertoothSerial C(Serial2);
+  USBSabertoothSerial C(Serial1);
   USBSabertooth ST(C, 128);
 
   // Throttle values for Sabertooth2x32
-  const int throttleMin = -2047;  // minimum or Reverse value
-  const int throttleBrake = 0; // Brake value
-  const int throttleMax = 2047; // maximum or Forward value
+  const int mot_throttleMin = -2047;  // Minimum throttle value for motor controller
+  const int mot_throttleBrake = 0; // Brake throttle value for motor controller
+  const int mot_throttleMax = 2047; // Maximum throttle value for motor controller
   
-  const int driverTimeout = 500; //Number of milliseconds before Sabertooth2x32 will stop motors.
-  const int driverDeadband = 0; //Full deadband around throttleBrake -> If motor driver has deadband this amount will be removed
+  const int driverTimeout_us = 500; // Number of milliseconds before Sabertooth2x32 will stop motors.
+  const int removeDriverDeadbandPercent = 0; // Remove motor driver deadband -> remove percentage of throttle around mot_throttleBrake
 #endif
-
-////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////
 // SPARK MOTOR CONTROLLER
 #if defined(MOT_SPARK)
-  #include <Servo.h> 
-
-  // Throttle values for Spark
-  const int throttleMin = 1000;  // minimum or Reverse value
-  const int throttleBrake = 1500; // Brake value
-  const int throttleMax = 2000; // maximum or Forward value
+  // Teensy3
+  #if defined(BOARD_TEENSY3)
+    #include <PWMServo.h>
   
-  const int driverDeadband = 23; //Full deadband around throttleBrake -> If motor driver has deadband this amount will be removed
+    PWMServo motor1;
+  
+    // Forward/Reverse values for Spark Motor Controller
+    const int mot_throttleMin = 1000;  // Minimum throttle value for motor controller
+    const int mot_throttleBrake = 1500; // Brake throttle value for motor controller
+    const int mot_throttleMax = 2000; // Maximum throttle value for motor controller
+  
+    const int removeDriverDeadbandPercent = 10; // Remove motor driver deadband -> remove percentage of throttle around mot_throttleBrake
 
-  Servo spark1;
-  Servo spark2;
-  Servo spark3;
-  Servo spark4;
+  // Maple Mini
+  #elif defined(BOARD_MAPLEMINI)
+    HardwareTimer pwmTimer2(2); //Setup timer object
+    
+    // Forward/Reverse/Brake values for Spark Motor Controller
+    const int mot_throttleMin = 1000;  // Minimum throttle value for motor controller
+    const int mot_throttleBrake = 1500; // Brake throttle value for motor controller
+    const int mot_throttleMax = 2000; // Maximum throttle value for motor controller
+    
+    const int removeDriverDeadbandPercent = 10; // Remove motor driver deadband -> remove percentage of throttle around mot_throttleBrake
+  #endif
 #endif
 ////////////////////////////////////////////////////////////////////////

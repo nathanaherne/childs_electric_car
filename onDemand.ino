@@ -1,26 +1,57 @@
+void setManualControlMapping(int &MC_throttle, int &MC_reverse, int &MC_brake, int &MC_cruiseControl,
+      int &MC_horn, int &MC_indicL, int &MC_indicR, int &MC_head, int &MC_hazard){
+
+  MC_throttle = MC_throttle_pin;
+  MC_reverse = MC_reverse_pin;
+  
+  // No Cruise Control
+  if (cruiseControlFeature == 0) {
+    MC_cruiseControl;
+  }
+  // Cruise Control enabled by throttle
+  else if (cruiseControlFeature == 1) {
+    MC_cruiseControl = MC_throttle_pin;
+  }
+  // Cruise Control enabled by button
+  else if (cruiseControlFeature == 2) {
+    MC_cruiseControl = MC_cruiseControl_pin;
+  }
+  else {
+    MC_cruiseControl;
+  }
+  MC_brake = MC_brake_pin;
+  
+  MC_horn = MC_horn_pin; // Horn (digital)
+  MC_indicL = MC_indicL_pin; // Indicator1 (digital)
+  MC_indicR = MC_indicR_pin; // Indicator2 (digital)
+  MC_head = MC_head_pin; // Headlights (digital)
+  MC_hazard = MC_hazard_pin; // Other (analog)
+  
+}
+
 // Calculate Forward/Reverse values
-void calcForwardReverseValues(int &maxForward, int &minForward, int &maxReverse, int &minReverse){
+void calcForwardReverseValues(int &maxForward, int &minForward, int &maxReverse, int &minReverse, int driverDeadbandCenterHalf){
   
   // Calculations for maxForward
   if (reverseMotorDirection == true) {
-    maxForward = throttleBrake - (((throttleBrake - throttleMin) * maxForwardPercent) / 100); // Based on maxForwardPercent & Throttle Output Value settings
-    minForward = throttleBrake - driverDeadband / 2;
+    maxForward = mot_throttleBrake - (((mot_throttleBrake - mot_throttleMin) * maxForwardThrottlePercent) / 100); // Based on maxForwardThrottlePercent & Throttle Output Value settings
+    minForward = mot_throttleBrake - driverDeadbandCenterHalf;
   } else if (reverseMotorDirection == false) {
-    maxForward = throttleBrake + (((throttleMax - throttleBrake) * maxForwardPercent) / 100); // Based on maxForwardPercent & Throttle Output Value settings
-    minForward = throttleBrake + driverDeadband / 2;
+    maxForward = mot_throttleBrake + (((mot_throttleMax - mot_throttleBrake) * maxForwardThrottlePercent) / 100); // Based on maxForwardThrottlePercent & Throttle Output Value settings
+    minForward = mot_throttleBrake + driverDeadbandCenterHalf;
   } else {
-    maxForward = throttleBrake;
+    maxForward = mot_throttleBrake;
   }
   
   // Calculation for maxReverse
   if (reverseMotorDirection == true) {
-    maxReverse = throttleBrake + (((throttleMax - throttleBrake) * maxReversePercent) / 100); // Based on maxReversePercent & Throttle Output Value settings
-    minReverse = throttleBrake + driverDeadband / 2;
+    maxReverse = mot_throttleBrake + (((mot_throttleMax - mot_throttleBrake) * maxReverseThrottlePercent) / 100); // Based on maxReverseThrottlePercent & Throttle Output Value settings
+    minReverse = mot_throttleBrake + driverDeadbandCenterHalf;
   } else if (reverseMotorDirection == false) {
-    maxReverse = throttleBrake - (((throttleBrake - throttleMin) * maxReversePercent) / 100); // Based on maxReversePercent & Throttle Output Value settings
-    minReverse = throttleBrake - driverDeadband / 2;
+    maxReverse = mot_throttleBrake - (((mot_throttleBrake - mot_throttleMin) * maxReverseThrottlePercent) / 100); // Based on maxReverseThrottlePercent & Throttle Output Value settings
+    minReverse = mot_throttleBrake - driverDeadbandCenterHalf;
   } else {
-    maxReverse = throttleBrake;
+    maxReverse = mot_throttleBrake;
   }
 
 //  Serial.print("minForward: ");Serial.print(minForward);Serial.print(" ");
@@ -35,13 +66,13 @@ void calcCruiseControlValues(int &maxCruiseControl, int &minCruiseControl){
 
   // Calculation for maxCruiseControl forward throttle && cruiseControlMinThrottle
   if (reverseMotorDirection == true) {
-    maxCruiseControl = throttleBrake - (((throttleBrake - throttleMin) * maxCruiseControlPercent) / 100); //Based on maxCruiseControlPercent & Throttle Output Value settings
-    minCruiseControl = throttleBrake - (((throttleBrake - maxCruiseControl) * minCruiseControlPercent) / 100);
+    maxCruiseControl = mot_throttleBrake - (((mot_throttleBrake - mot_throttleMin) * maxCruiseControlThrottlePercent) / 100); //Based on maxCruiseControlThrottlePercent & Throttle Output Value settings
+    minCruiseControl = mot_throttleBrake - (((mot_throttleBrake - maxCruiseControl) * minCruiseControlThrottleEnablePercent) / 100);
   } else if (reverseMotorDirection == false) {
-    maxCruiseControl = throttleBrake + (((throttleMax - throttleBrake) * maxCruiseControlPercent) / 100); // Based on maxCruiseControlPercent & Throttle Output Value settings
-    minCruiseControl = throttleBrake + (((maxCruiseControl - throttleBrake) * minCruiseControlPercent) / 100);
+    maxCruiseControl = mot_throttleBrake + (((mot_throttleMax - mot_throttleBrake) * maxCruiseControlThrottlePercent) / 100); // Based on maxCruiseControlThrottlePercent & Throttle Output Value settings
+    minCruiseControl = mot_throttleBrake + (((maxCruiseControl - mot_throttleBrake) * minCruiseControlThrottleEnablePercent) / 100);
   } else {
-    maxCruiseControl = throttleBrake;
+    maxCruiseControl = mot_throttleBrake;
   }
 
 //  Serial.print("minCruiseControl: ");Serial.print(minCruiseControl);Serial.print(" ");
@@ -54,13 +85,13 @@ void calcCruiseControlValues(int &maxCruiseControl, int &minCruiseControl){
 // Calculations for ramp intervals
 void calcRampIntervals(unsigned long &forwardRampInterval, unsigned long &reverseRampInterval, unsigned long &brakeRampInterval, unsigned long &cruiseControlRampInterval) {
   
-  forwardRampInterval = 1000 * (forwardRampPercent * (throttleRangeMs / (throttleMax - throttleMin)) / 100); // microseconds between Forward currentThrottle updates
+  forwardRampInterval = 1000 * (forwardRampPercent * (throttleRange_ms / (mot_throttleMax - mot_throttleMin)) / 100); // microseconds between Forward currentThrottle updates
   
-  reverseRampInterval = 1000 * (reverseRampPercent * (throttleRangeMs / (throttleMax - throttleMin)) / 100); // microseconds between Reverse currentThrottle updates
+  reverseRampInterval = 1000 * (reverseRampPercent * (throttleRange_ms / (mot_throttleMax - mot_throttleMin)) / 100); // microseconds between Reverse currentThrottle updates
   
-  brakeRampInterval =  1000 * (brakeRampPercent * (throttleRangeMs / (throttleMax - throttleMin)) / 100); // microseconds between Reverse currentThrottle updates
+  brakeRampInterval =  1000 * (brakeRampPercent * (throttleRange_ms / (mot_throttleMax - mot_throttleMin)) / 100); // microseconds between Reverse currentThrottle updates
   
-  cruiseControlRampInterval = 1000 * (cruiseControlRampPercent * (throttleRangeMs / (throttleMax - throttleMin)) / 100); // microseconds between Cruise Control currentThrottle updates
+  cruiseControlRampInterval = 1000 * (cruiseControlRampPercent * (throttleRange_ms / (mot_throttleMax - mot_throttleMin)) / 100); // microseconds between Cruise Control currentThrottle updates
 
 //  Serial.print("forwardRampInterval: ");Serial.print(forwardRampInterval);Serial.print(" ");
 //  Serial.print("reverseRampInterval: ");Serial.print(reverseRampInterval);Serial.print(" ");
@@ -69,3 +100,23 @@ void calcRampIntervals(unsigned long &forwardRampInterval, unsigned long &revers
 //  Serial.println();
   
 }
+
+void calcDeadband(int &throttleDeadbandCenter, int &throttleDeadbandMax, int &driverDeadbandCenterHalf) {
+
+  throttleDeadbandCenter = (analogReadMax - analogReadMin) * throttleDeadband_min_Percent / 100;
+
+  throttleDeadbandMax = (analogReadMax - analogReadMin) * throttleDeadband_max_Percent / 100;
+
+  driverDeadbandCenterHalf = round((((mot_throttleMax - mot_throttleMin) * (removeDriverDeadbandPercent / 100)) / 2) - 0.5); // round down
+
+  //Serial.print("driverDeadband: ");Serial.print(driverDeadbandCenterHalf);Serial.println();
+}
+
+void calcDebounceMax(int &debounceMax) {
+
+  debounceMax = int(debounce_ms * debounceSampleFrequency_hz) / 1000; // debounceMax is in seconds
+
+  //Serial.print("debounceMax: ");Serial.print(debounceMax);Serial.println();
+  
+}
+
