@@ -297,6 +297,11 @@ void loop() {
       
       Serial.print("TDB: ");Serial.print(throttleDeadbandCenter);Serial.print(" ");
       Serial.print("DDB: ");Serial.print(removeDriverDeadbandPercent);Serial.print(" || ");
+
+//      Serial.print("forwardRampInterval: ");Serial.print(forwardRampInterval);Serial.print(" ");
+//      Serial.print("reverseRampInterval: ");Serial.print(reverseRampInterval);Serial.print(" ");
+//      Serial.print("brakeRampInterval: ");Serial.print(brakeRampInterval);Serial.print(" ");
+//      Serial.print("cruiseControlRampInterval: ");Serial.print(cruiseControlRampInterval);Serial.print(" || ");
       
       Serial.print("LT: ");Serial.print(looptime);Serial.print(" ");
       

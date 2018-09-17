@@ -62,7 +62,7 @@ void setupPins() {
 
   // Setup the pins for manual control
   if (inputControlFeature == 1) {
-    #if defined(BOARD_ARDUINO)
+    #if defined(BOARD_PROMINI)
       pinMode(MC_throttle_pin, INPUT);
       pinMode(MC_reverse_pin, INPUT);
       pinMode(MC_cruiseControl_pin, INPUT);
@@ -107,7 +107,7 @@ void setupPins() {
 
   // Enable pins for Spark Motor Controller
   #if defined(MOT_SPARK)
-    #if defined(BOARD_ARDUINO)
+    #if defined(BOARD_PROMINI)
       pinMode(mot_pwm1_pin, OUTPUT);
     #elif defined(BOARD_MAPLEMINI)
       pinMode(mot_pwm1_pin, PWM);

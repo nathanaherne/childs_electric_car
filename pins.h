@@ -5,7 +5,7 @@ const int NOT_A_PIN = -1;
 
 ////////////////////////////////////////////////////////////////////////
 // Manual control input pins
-#if defined(BOARD_ARDUINO)
+#if defined(BOARD_PROMINI)
   const int MC_throttle_pin = A0; // Throttle (analog)
   const int MC_reverse_pin = A2; // Reverse Enable (digital)
   const int MC_cruiseControl_pin = 2; // Cruise Control Enable (digital)

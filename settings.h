@@ -3,13 +3,13 @@
 boolean reverseMotorDirection = false; // Reverse motor direction -> true/false
 
 // Speed and Acceleration settings
-int maxForwardThrottlePercent = 69; // Maximum forward throttle (percentage)
-int forwardRampPercent = 50; // Forward acceleration percent -> larger value = slower acceleration
+int maxForwardThrottlePercent = 65; // Maximum forward throttle (percentage)
+int forwardRampPercent = 50; // Forward acceleration percent -> smaller value = slower acceleration
 
 int maxReverseThrottlePercent = 40; // Maximum reverse throttle (percentage)
-int reverseRampPercent = 50; // Reverse acceleration percent -> larger value = slower acceleration
+int reverseRampPercent = 50; // Reverse acceleration percent -> smaller value = slower acceleration
 
-int brakeRampPercent = 10; // Brake acceleration percent -> larger value = slower acceleration
+int brakeRampPercent = 10; // Brake acceleration percent -> smaller value = slower acceleration
 ////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ int cruiseControlFeature = 1;
 
 // Only active if Cruise Control is enabled (i.e. cruiseControlFeature != 0)
 int maxCruiseControlThrottlePercent = 70; // Maximum Cruise Control forward throttle (percentage)
-int cruiseControlRampPercent = 50; // Cruise Control acceleration speed (milliseconds), larger value = slower acceleration
+int cruiseControlRampPercent = 50; // Cruise Control acceleration speed (milliseconds), smaller value = slower acceleration
 
 // Only active when cruiseControlFeature = 1
 int cruiseControlForwardThrottleEnableDelay_Sec = 30; // Seconds full throttle must be commanded for Cruise Control to activate
@@ -77,7 +77,7 @@ const int inhibitFeature = 0;
 const int batteryType = 2; // SLA = 1, LiPo = 2, LiFeP04 = 3
 const int batteryCapacity = 10000; // battery capacity in milliamp hours
 
-const float lipoCellCount = 6;
+const int lipoCellCount = 6;
 
 const int batteryVoltageWarningPercent = 20; // voltage at which it shows a warning
 const int currentWarningAmps = 20;
@@ -89,7 +89,7 @@ const float lipoCellVoltMin = 3.7;
 
 ////////////////////////////////////////////////////////////////////////
 // BOARD OPTIONS
-// 1. BOARD_ARDUINO
+// 1. BOARD_PROMINI
 // 2. BOARD_MAPLEMINI
 // 3. BOARD_TEENSY3
 // 4. BOARD_STM32F406VET6
@@ -133,7 +133,7 @@ volatile int pwmDutyMax; // Calculated in setup
 ////////////////////////////////////////////////////////////////////////
 // Analog Read settings
   // Arduino
-  #if defined(BOARD_ARDUINO)
+  #if defined(BOARD_PROMINI)
     static int analogReadMin = 0;
     static int analogReadMax = 1023;
   // Maple Mini

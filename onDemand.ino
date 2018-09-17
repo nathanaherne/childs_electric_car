@@ -85,13 +85,13 @@ void calcCruiseControlValues(int &maxCruiseControl, int &minCruiseControl){
 // Calculations for ramp intervals
 void calcRampIntervals(unsigned long &forwardRampInterval, unsigned long &reverseRampInterval, unsigned long &brakeRampInterval, unsigned long &cruiseControlRampInterval) {
   
-  forwardRampInterval = 1000 * (forwardRampPercent * (throttleRange_ms / (mot_throttleMax - mot_throttleMin)) / 100); // microseconds between Forward currentThrottle updates
+  forwardRampInterval = 1000 * ((1 - (forwardRampPercent / 100)) * (throttleRange_ms / (mot_throttleMax - mot_throttleMin))); // us between Forward currentThrottle updates
   
-  reverseRampInterval = 1000 * (reverseRampPercent * (throttleRange_ms / (mot_throttleMax - mot_throttleMin)) / 100); // microseconds between Reverse currentThrottle updates
+  reverseRampInterval = 1000 * ((1 - (reverseRampPercent / 100)) * (throttleRange_ms / (mot_throttleMax - mot_throttleMin))); // us between Reverse currentThrottle updates
   
-  brakeRampInterval =  1000 * (brakeRampPercent * (throttleRange_ms / (mot_throttleMax - mot_throttleMin)) / 100); // microseconds between Reverse currentThrottle updates
+  brakeRampInterval =  1000 * ((1 - (brakeRampPercent / 100)) * (throttleRange_ms / (mot_throttleMax - mot_throttleMin))); // us between Reverse currentThrottle updates
   
-  cruiseControlRampInterval = 1000 * (cruiseControlRampPercent * (throttleRange_ms / (mot_throttleMax - mot_throttleMin)) / 100); // microseconds between Cruise Control currentThrottle updates
+  cruiseControlRampInterval = 1000 * ((1 - (cruiseControlRampPercent / 100)) * (throttleRange_ms / (mot_throttleMax - mot_throttleMin))); // us between Cruise Control currentThrottle updates
 
 //  Serial.print("forwardRampInterval: ");Serial.print(forwardRampInterval);Serial.print(" ");
 //  Serial.print("reverseRampInterval: ");Serial.print(reverseRampInterval);Serial.print(" ");
