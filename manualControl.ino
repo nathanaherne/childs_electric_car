@@ -32,13 +32,18 @@ void getManualControlDigital(int MC_throttle, int MC_reverse, int MC_brake, int 
 }
 
 // Calculate Manual Control Commands
-void calcManualControlCommands(int &inputThrottle, boolean &inputThrottleDigital, int & forwardThrottle, int &reverseThrottle, boolean &inputReverseEnable,
+void calcManualControlCommands(int &inputThrottle, boolean &inputThrottleDigital, int &forwardThrottle, int &reverseThrottle, boolean &inputReverseEnable,
         boolean &inputBrake, boolean &noMotionCommanded, boolean &inputCruiseControl, boolean &cruiseControlOn,
         int throttleDeadband_min, int throttleDeadband_max) {
 
-  // Remove deadband on throttle before doing calculations
+  // Remove center deadband on throttle before doing calculations
   if (inputThrottle - throttleDeadband_min < analogReadMin) {
     inputThrottle = analogReadMin;
+  }
+
+  // manualControlFeature settings do not have brake set it to false
+  if (manualControlFeature == 1 || manualControlFeature == 4) {
+    inputBrake = false;
   }
 
   // Brake Commanded -> hard stop available using inhibit_drive_pin
@@ -50,15 +55,12 @@ void calcManualControlCommands(int &inputThrottle, boolean &inputThrottleDigital
     return; // ok to return here
   }
   // Forward commanded (reverse NOT commanded)
-  else if (inputReverseEnable == false) {
-    // Remove the throttleDeadband_min
-    if (inputThrottle - throttleDeadband_min < analogReadMin) {
-      forwardThrottle = analogReadMin;
-    }
-    // Add throttleDeadband_max and cap throttle to full throttle
-    else if (inputThrottle + throttleDeadband_max >= analogReadMax) {
+  else if (inputThrottle > 0 && inputReverseEnable == false) {
+    // Add throttleDeadband_max to inputThrottle and cap throttle to analogReadMax if above 
+    if (inputThrottle + throttleDeadband_max >= analogReadMax) {
       forwardThrottle = analogReadMax;
-    } else {
+    }
+    else {
       forwardThrottle = inputThrottle;
     }
     reverseThrottle = analogReadMin;
@@ -66,13 +68,9 @@ void calcManualControlCommands(int &inputThrottle, boolean &inputThrottleDigital
     inputBrake = false;
   }
   // Reverse commanded
-  else if (inputReverseEnable == true) {
-    // Remove throttleDeadband_min
-    if (inputThrottle - throttleDeadband_min < analogReadMin) {
-      reverseThrottle = analogReadMin;
-    }
-    // Add throttleDeadband_max
-    else if (inputThrottle + throttleDeadband_max >= analogReadMax) {
+  else if (inputThrottle > 0 && inputReverseEnable == true) {
+    // Add throttleDeadband_max to inputThrottle and cap throttle to analogReadMax if above
+    if (inputThrottle + throttleDeadband_max >= analogReadMax) {
       reverseThrottle = analogReadMax;
     } else {
       reverseThrottle = inputThrottle;

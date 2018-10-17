@@ -34,8 +34,18 @@
 ////////////////////////////////////////////////////////////////////////
 // SPARK MOTOR CONTROLLER
 #if defined(MOT_SPARK)
+  // Maple Mini
+  #if defined(BOARD_MAPLEMINI)
+    HardwareTimer pwmTimer2(2); //Setup timer object
+    
+    // Forward/Reverse/Brake values for Spark Motor Controller
+    const int mot_throttleMin = 1000;  // Minimum throttle value for motor controller
+    const int mot_throttleBrake = 1500; // Brake throttle value for motor controller
+    const int mot_throttleMax = 2000; // Maximum throttle value for motor controller
+    
+    const int removeDriverDeadbandPercent = 10; // Remove motor driver deadband -> remove percentage of throttle around mot_throttleBrake
   // Teensy3
-  #if defined(BOARD_TEENSY3)
+  #elif defined(BOARD_TEENSY3)
     #include <PWMServo.h>
   
     PWMServo motor1;
@@ -45,17 +55,6 @@
     const int mot_throttleBrake = 1500; // Brake throttle value for motor controller
     const int mot_throttleMax = 2000; // Maximum throttle value for motor controller
   
-    const int removeDriverDeadbandPercent = 10; // Remove motor driver deadband -> remove percentage of throttle around mot_throttleBrake
-
-  // Maple Mini
-  #elif defined(BOARD_MAPLEMINI)
-    HardwareTimer pwmTimer2(2); //Setup timer object
-    
-    // Forward/Reverse/Brake values for Spark Motor Controller
-    const int mot_throttleMin = 1000;  // Minimum throttle value for motor controller
-    const int mot_throttleBrake = 1500; // Brake throttle value for motor controller
-    const int mot_throttleMax = 2000; // Maximum throttle value for motor controller
-    
     const int removeDriverDeadbandPercent = 10; // Remove motor driver deadband -> remove percentage of throttle around mot_throttleBrake
   #endif
 #endif

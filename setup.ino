@@ -53,7 +53,7 @@ void setupPins() {
     pinMode(inhibit_pin, INPUT);
   }
   
-  // Setup non configurable pins
+  // Setup non configurable output pins
   pinMode(headLight_pin, OUTPUT);
   pinMode(indicLightL_pin, OUTPUT);
   pinMode(indicLightR_pin, OUTPUT);
@@ -61,28 +61,8 @@ void setupPins() {
   pinMode(onBoardLed_pin, OUTPUT);
 
   // Setup the pins for manual control
-  if (inputControlFeature == 1) {
-    #if defined(BOARD_PROMINI)
-      pinMode(MC_throttle_pin, INPUT);
-      pinMode(MC_reverse_pin, INPUT);
-      pinMode(MC_cruiseControl_pin, INPUT);
-      pinMode(MC_brake_pin, INPUT);
-      pinMode(MC_horn_pin, INPUT);
-      pinMode(MC_indicL_pin, INPUT);
-      pinMode(MC_indicR_pin, INPUT);
-      pinMode(MC_head_pin, INPUT);
-      pinMode(MC_hazard_pin, INPUT);
-    #elif defined(BOARD_MAPLEMINI)
-      pinMode(MC_throttle_pin, INPUT_ANALOG);
-      pinMode(MC_reverse_pin, INPUT);
-      pinMode(MC_cruiseControl_pin, INPUT);
-      pinMode(MC_brake_pin, INPUT);
-      pinMode(MC_horn_pin, INPUT);
-      pinMode(MC_indicL_pin, INPUT);
-      pinMode(MC_indicR_pin, INPUT);
-      pinMode(MC_head_pin, INPUT);
-      pinMode(MC_hazard_pin, INPUT);
-    #elif defined(BOARD_TEENSY3)
+  if (manualControlFeature != 0) {
+    #if defined(BOARD_TEENSY3)
       pinMode(MC_throttle_pin, INPUT);
       pinMode(MC_reverse_pin, INPUT);
       pinMode(MC_cruiseControl_pin, INPUT);
@@ -107,9 +87,7 @@ void setupPins() {
 
   // Enable pins for Spark Motor Controller
   #if defined(MOT_SPARK)
-    #if defined(BOARD_PROMINI)
-      pinMode(mot_pwm1_pin, OUTPUT);
-    #elif defined(BOARD_MAPLEMINI)
+    #if defined(BOARD_MAPLEMINI)
       pinMode(mot_pwm1_pin, PWM);
       pinMode(mot_pwm2_pin, PWM);
       pinMode(mot_pwm3_pin, PWM);

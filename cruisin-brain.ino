@@ -91,7 +91,7 @@ void loop() {
 
   // Control variables used by all input modes
   static int inputThrottle; // Throttle value
-  static boolean inputThrottleDigital; // Digital forward command value -> used for Cruise Control on button
+  static boolean inputThrottleDigital; // Digital throttle command value
   static int inputThrottleDigitalIntegrator; // Used to debounce inputThrottleDigital
   static int forwardThrottle; // Calculated
   static boolean inputReverseEnable; // Digital value
@@ -203,15 +203,15 @@ void loop() {
 
 ////////////////////////////////////////////////////////////////////////
 // CRUISE CONTROL
-  // If Cruise Control enabled by throttle
-  if (cruiseControlFeature == 1 && (current_us - prev_cruiseControlStatusChangeInterval_us) >= cruiseControlStatusChangeInterval_us) {
-        cruiseControlThrottleEnable(targetThrottle, currentThrottle, forwardThrottle, reverseThrottle, inputReverseEnable,
+  // CruiseControl enabled by throttle -> if Cruise Control enabled and manualControlFeature only has forward/reverse
+  if ((cruiseControlFeature == 1 && manualControlFeature == 1) && (current_us - prev_cruiseControlStatusChangeInterval_us) >= cruiseControlStatusChangeInterval_us) {
+        cruiseControlThrottleEnable(targetThrottle, currentThrottle, inputThrottleDigital, forwardThrottle, reverseThrottle, inputReverseEnable,
           noMotionCommanded, inputBrake, cruiseControlOn,
           cruiseControlEnabled_us, throttleFirstCommanded_us, cruiseControl_MC_throttle_EnableDelay_us, 
           cruiseControl_MC_throttle_DisableDelay_us, current_us);
   }
-  // If Cruise Control is enabled by its own button
-  else if (cruiseControlFeature == 2 && (cruiseControlOn == true || inputCruiseControl == true || inputBrake == true)) {
+  // CruiseControl enabled by a button -> if Cruise Control is enabled and manualControlFeature has cruiseControl on its own button
+  else if ((cruiseControlFeature == 1 && manualControlFeature == 3) && (cruiseControlOn == true || inputCruiseControl == true || inputBrake == true)) {
         cruiseControlButton(currentThrottle, cruiseControlOn, minCruiseControl, cruiseControlFirstEnabled, inputCruiseControl, inputBrake,
         current_us, cruiseControlStatusChangeInterval_us, prev_cruiseControlStatusChangeInterval_us);
   }
@@ -290,18 +290,13 @@ void loop() {
       Serial.print("Cur: ");Serial.print(currentThrottle);Serial.print(" ");
       Serial.print("CurP: ");Serial.print(currentThrottlePercent);Serial.print(" || ");
       
-//      Serial.print("FRI: ");Serial.print(forwardRampInterval);Serial.print(" ");
-//      Serial.print("RRI: ");Serial.print(reverseRampInterval);Serial.print(" ");
-//      Serial.print("CCRI: ");Serial.print(cruiseControlRampInterval);Serial.print(" ");
-//      Serial.print("BRI: ");Serial.print(brakeRampInterval);Serial.print(" || ");
+      Serial.print("FRI: ");Serial.print(forwardRampInterval);Serial.print(" ");
+      Serial.print("RRI: ");Serial.print(reverseRampInterval);Serial.print(" ");
+      Serial.print("CCRI: ");Serial.print(cruiseControlRampInterval);Serial.print(" ");
+      Serial.print("BRI: ");Serial.print(brakeRampInterval);Serial.print(" || ");
       
       Serial.print("TDB: ");Serial.print(throttleDeadbandCenter);Serial.print(" ");
       Serial.print("DDB: ");Serial.print(removeDriverDeadbandPercent);Serial.print(" || ");
-
-//      Serial.print("forwardRampInterval: ");Serial.print(forwardRampInterval);Serial.print(" ");
-//      Serial.print("reverseRampInterval: ");Serial.print(reverseRampInterval);Serial.print(" ");
-//      Serial.print("brakeRampInterval: ");Serial.print(brakeRampInterval);Serial.print(" ");
-//      Serial.print("cruiseControlRampInterval: ");Serial.print(cruiseControlRampInterval);Serial.print(" || ");
       
       Serial.print("LT: ");Serial.print(looptime);Serial.print(" ");
       
@@ -361,42 +356,50 @@ void cruiseControlButton(int currentThrottle, boolean &cruiseControlOn, int minC
   }
 }
 
-// Cruise Control enabled by Throttle
-void cruiseControlThrottleEnable(int targetThrottle, int currentThrottle, int inputThrottle, int reverseThrottle, boolean inputReverseEnable, 
+// Cruise Control enabled by Throttle.
+void cruiseControlThrottleEnable(int targetThrottle, int currentThrottle, boolean inputThrottleDigital, int forwardThrottle, int reverseThrottle, boolean inputReverseEnable, 
           boolean noMotionCommanded, boolean inputBrake, boolean &cruiseControlOn,
           unsigned long &cruiseControlEnabled_us, unsigned long &throttleFirstCommanded_us, unsigned int cruiseControl_MC_throttle_EnableDelay_us, 
           unsigned int cruiseControl_MC_throttle_DisableDelay_us, unsigned long current_us) {
 
-    // Check that targetThrottle is positive and inputThrottle > 0
-    // targetThrottle can be negative when reverseMotorDirection = true
-    if (abs(targetThrottle) > 0 && inputThrottle > 0) {
-      // Only set throttleFirstCommanded_us the first time inputThrottle > 0
-      if (throttleFirstCommanded_us == 0) {
-          throttleFirstCommanded_us = current_us;
+    // If CruiseControl isn't enabled, work out if we should enable it
+    if (cruiseControlOn == false) {
+      // Check that targetThrottle isn't zero and forwardThrottle > 0 (only enable cruiseControl for forwardThottle
+      // NOTE: targetThrottle can be negative when reverseMotorDirection = true
+      if (abs(targetThrottle) > 0 && forwardThrottle > 0) {
+        // Set throttleFirstCommanded_us the first time inputThrottle > 0
+        if (throttleFirstCommanded_us == 0) {
+            throttleFirstCommanded_us = current_us;
+        }
+         // Has throttle been on longer than cruiseControl_MC_throttle_EnableDelay_us -> if so enable cruise control
+        else if (throttleFirstCommanded_us > 0 && (current_us - throttleFirstCommanded_us >= cruiseControl_MC_throttle_EnableDelay_us)) {
+          cruiseControlOn = true; // Enabled Cruise Control
+          cruiseControlEnabled_us = current_us; // Set the time when Cruise Control was enabled
+        }
       }
-       // Is throttleFirstCommanded_us >= cruiseControlWait_us
-      else if (throttleFirstCommanded_us > 0 && cruiseControlOn == false && (current_us - throttleFirstCommanded_us >= cruiseControl_MC_throttle_EnableDelay_us)) {
-        cruiseControlOn = true; // Enabled Cruise Control
-        cruiseControlEnabled_us = current_us; // Set the time when Cruise Control was enabled
+    }
+    // If CruiseControl is enabled, work out if we should disable it
+    else if (cruiseControlOn == true) {
+      // Disable Cruise Control if inputThrottleDigital is true and cruiseControl_MC_throttle_DisableDelay_us has elapsed
+      if (inputThrottleDigital == true && (current_us - cruiseControlEnabled_us) >= cruiseControl_MC_throttle_DisableDelay_us) {
+        cruiseControlOn = false; // Disable Cruise Control
+        throttleFirstCommanded_us = 0; // Reset to zero
+        cruiseControlEnabled_us = 0; // Reset to zero
       }
-      // Disable Cruise Control if cruiseControlOn, Forward commanded (see above) and cruiseControl_MC_throttle_DisableDelay_us has elapsed
-      else if (cruiseControlOn == true && (current_us - cruiseControlEnabled_us) >= cruiseControl_MC_throttle_DisableDelay_us) {
+      // Disable Cruise Control when Brake or Reverse is commanded
+      else if (inputBrake == true || inputReverseEnable == true) {
         cruiseControlOn = false; // Disable Cruise Control
         throttleFirstCommanded_us = 0; // Reset to zero
         cruiseControlEnabled_us = 0; // Reset to zero
       }
     }
-    // Disable Cruise Control when Brake or Reverse is commanded
-    else if (cruiseControlOn == true && (inputBrake == true || reverseThrottle > 0 || inputReverseEnable == true)) {
-      cruiseControlOn = false; // Disable Cruise Control
-      throttleFirstCommanded_us = 0; // Reset to zero
-      cruiseControlEnabled_us = 0; // Reset to zero
-    }
-    else if (targetThrottle == mot_throttleBrake || reverseThrottle > 0 || inputBrake == true || inputReverseEnable == true) {
-      cruiseControlOn = false; // Disable Cruise Control
-      throttleFirstCommanded_us = 0; // Reset to zero
-    }
 
+    // For all other scenarios, disable cruiseControl and reset everything
+    if (targetThrottle == mot_throttleBrake) {
+        cruiseControlOn = false; // Disable Cruise Control
+        throttleFirstCommanded_us = 0; // Reset to zero
+        cruiseControlEnabled_us = 0; // Reset to zero
+    }
 }
 
 // Calculate the target throttle
